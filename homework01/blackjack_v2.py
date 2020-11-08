@@ -84,7 +84,7 @@ class BlackjackEnv2(gym.Env):
 
     def step(self, action):
         assert self.action_space.contains(action)
-        if action == 2:
+        if action == 2:  # double: add a card to players hand, stick and double the reward
             self.player.append(draw_card(self.np_random))
             done = True
             while sum_hand(self.dealer) < 17:

@@ -76,6 +76,7 @@ class BlackjackEnv3(gym.Env):
         return [seed]
     
     def shuffle_deck(self):
+        # перемешиваем колоду и обнуляем счет
         self.deck = global_deck.copy()
         self.np_random.shuffle(self.deck)
         self.count = 0  # - ноль из системы "Плюс-Минус"
@@ -87,12 +88,14 @@ class BlackjackEnv3(gym.Env):
             self.count -= 1
     
     def real_count(self):
+        # текущий реальный счет
         cnt = round(self.count * 52 / len(self.deck))
         return min(max(cnt, -10), 10) + 10
     
     def draw_card(self):
         card = self.deck[-1]
         del self.deck[-1]
+        # когда карта осталось мало, перетасовываем колоду
         if len(self.deck) < 15:
             self.shuffle_deck()
         return card
@@ -102,7 +105,7 @@ class BlackjackEnv3(gym.Env):
 
     def step(self, action):
         assert self.action_space.contains(action)
-        if action == 2:
+        if action == 2:  # double: add a card to players hand, stick and double the reward
             card = self.draw_card()
             self.plus_minus(card)
             self.player.append(card)
